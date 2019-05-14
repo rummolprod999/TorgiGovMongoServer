@@ -2,7 +2,7 @@ using System;
 using TorgiGovMongoServer.Documents;
 using TorgiGovMongoServer.Logger;
 
-namespace TorgiGovMongoServer.Executor
+namespace TorgiGovMongoServer.Parsers
 {
     public class ParserAbstract
     {

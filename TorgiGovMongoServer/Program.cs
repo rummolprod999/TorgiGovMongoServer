@@ -6,7 +6,7 @@ namespace TorgiGovMongoServer
     class Program
     {
         private static Arguments Arg { get; set; }
-        
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -15,6 +15,7 @@ namespace TorgiGovMongoServer
                     $"Недостаточно аргументов для запуска, используйте {Builder.ReqArguments} в качестве аргумента");
                 return;
             }
+
             Init(args[0]);
             Parser();
         }
