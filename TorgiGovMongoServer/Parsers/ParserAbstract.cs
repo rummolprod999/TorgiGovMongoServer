@@ -14,5 +14,17 @@ namespace TorgiGovMongoServer.Executor
             Log.Logger("Обновили Tender", AbstractDocument.UpCount);
             Log.Logger("Время окончания парсинга");
         }
+
+        protected void ParserDocument(IDocument t)
+        {
+            try
+            {
+                t.ParsingDocument();
+            }
+            catch (Exception e)
+            {
+                Log.Logger($"Exception in {t.GetType()}", e);
+            }
+        }
     }
 }
