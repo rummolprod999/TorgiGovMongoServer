@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+using Newtonsoft.Json;
 using TorgiGovMongoServer.BuilderApp;
+using TorgiGovMongoServer.Logger;
 using TorgiGovMongoServer.NetworkLibraries;
 
 namespace TorgiGovMongoServer.Parsers
@@ -50,8 +54,24 @@ namespace TorgiGovMongoServer.Parsers
             foreach (var b in BitKinds)
             {
                 var urlB = url.Replace("{bidKind}", b.ToString());
-                var xml = DownLoadString.DownloadString.DownL(urlB);
-                Console.WriteLine(xml);
+                var xmlS = DownLoadString.DownloadString.DownL(urlB);
+                if (string.IsNullOrEmpty(xmlS))
+                {
+                    Log.Logger("Получили пустую строку со списком торгов", urlB);
+                    continue;
+                }
+                StringToJson(xmlS);
+            }
+        }
+
+        private void StringToJson(string s)
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(s);
+            var jsons = JsonConvert.SerializeXmlNode(doc);
+            using (var sw = new StreamWriter("torgi.json", false, System.Text.Encoding.Default))
+            {
+                sw.WriteLine(jsons);
             }
         }
     }
