@@ -49,15 +49,15 @@ namespace TorgiGovMongoServer.Documents
 
         private async Task FilterDoc(IMongoCollection<GovDoc> col)
         {
-            var filterUpdate = new BsonDocument("$eq", _bidNumber);
+            var filterUpdate = new BsonDocument("bidNumberG", _bidNumber);
             var docs = await col.Find(filterUpdate).ToListAsync();
             foreach (var govDoc in docs)
             {
                 if (govDoc.LastChangedT >= _lastChanged) return;
-                var resDel = await col.DeleteManyAsync(filterUpdate);
-                var update = resDel.DeletedCount > 0;
-                await InsertDoc(col, update);
             }
+            var resDel = await col.DeleteManyAsync(filterUpdate);
+            var update = resDel.DeletedCount > 0;
+            await InsertDoc(col, update);
         }
 
         private async Task InsertDoc(IMongoCollection<GovDoc> col, bool updated)
@@ -81,7 +81,7 @@ namespace TorgiGovMongoServer.Documents
             await col.InsertOneAsync(tGov);
             if (updated)
             {
-                UpCount++;
+               UpCount++;
             }
             else
             {

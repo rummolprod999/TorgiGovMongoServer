@@ -15,8 +15,8 @@ namespace TorgiGovMongoServer.Parsers
         {
             Log.Logger("Время начала парсинга");
             op?.Invoke();
-            Log.Logger("Добавили Tender", AbstractDocument.Count);
-            Log.Logger("Обновили Tender", AbstractDocument.UpCount);
+            Log.Logger("Добавили Document", AbstractDocument.Count);
+            Log.Logger("Обновили Document", AbstractDocument.UpCount);
             Log.Logger("Время окончания парсинга");
         }
 
