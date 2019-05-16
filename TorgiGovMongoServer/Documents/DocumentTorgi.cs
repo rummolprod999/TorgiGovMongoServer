@@ -55,8 +55,14 @@ namespace TorgiGovMongoServer.Documents
             {
                 if (govDoc.LastChangedT >= _lastChanged) return;
             }
-            var resDel = await col.DeleteManyAsync(filterUpdate);
-            var update = resDel.DeletedCount > 0;
+
+            var update = false;
+            if (docs.Count > 0)
+            {
+                var resDel = await col.DeleteManyAsync(filterUpdate);
+                update = resDel.DeletedCount > 0;
+            }
+
             await InsertDoc(col, update);
         }
 
@@ -81,7 +87,7 @@ namespace TorgiGovMongoServer.Documents
             await col.InsertOneAsync(tGov);
             if (updated)
             {
-               UpCount++;
+                UpCount++;
             }
             else
             {
