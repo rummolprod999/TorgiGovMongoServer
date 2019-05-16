@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+
 namespace TorgiGovMongoServer.BuilderApp
 {
     public class Builder
@@ -66,7 +67,7 @@ namespace TorgiGovMongoServer.BuilderApp
                 TempDir = $"{Path}{System.IO.Path.DirectorySeparatorChar}{tempDirTmp}";
                 FileLog = $"{LogDir}{System.IO.Path.DirectorySeparatorChar}{Arg}_{DateTime.Now:dd_MM_yyyy}.log";
                 ConnectString =
-                    $"Server={Server};port={_port};Database={Database};User Id={UserDb};password={PassDb};CharSet=utf8;Convert Zero Datetime=True;default command timeout=3600;Connection Timeout=3600;SslMode=none";
+                    $"mongodb://localhost:27017";
             }
         }
 

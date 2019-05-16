@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using MongoDB.Driver;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TorgiGovMongoServer.BuilderApp;
 using TorgiGovMongoServer.Logger;
 using TorgiGovMongoServer.NetworkLibraries;
@@ -17,7 +19,9 @@ namespace TorgiGovMongoServer.Parsers
         private const string UrlChange =
             "http://torgi.gov.ru/opendata/7710349494-torgi/data.xml?bidKind={bidKind}&publishDateFrom={publishDateFrom}&publishDateTo={publishDateTo}&lastChangeFrom={lastChangeFrom}&lastChangeTo={lastChangeTo}";
 
-        private IEnumerable<int> BitKinds => new[] {1};
+        public const string DbName = "torgi";
+        public MongoClient clientDb;
+        private IEnumerable<int> BidKinds => new[] {1};
 
         public void Parsing()
         {
@@ -51,7 +55,7 @@ namespace TorgiGovMongoServer.Parsers
 
         private void ParserBidKind(string url)
         {
-            foreach (var b in BitKinds)
+            foreach (var b in BidKinds)
             {
                 var urlB = url.Replace("{bidKind}", b.ToString());
                 var xmlS = DownLoadString.DownloadString.DownL(urlB);
@@ -69,10 +73,45 @@ namespace TorgiGovMongoServer.Parsers
             var doc = new XmlDocument();
             doc.LoadXml(s);
             var jsons = JsonConvert.SerializeXmlNode(doc);
-            using (var sw = new StreamWriter("torgi.json", false, System.Text.Encoding.Default))
+            /*using (var sw = new StreamWriter("torgi.json", false, System.Text.Encoding.Default))
             {
                 sw.WriteLine(jsons);
+            }*/
+            var jo = JObject.Parse(jsons);
+            CheckDocuments(jo);
+            
+        }
+
+        private void CheckDocuments(JObject o)
+        {
+            CreateDbIFNotExist(DbName);
+            clientDb = new MongoClient(Builder.ConnectString);
+            var notifications = GetElements(o, "openData.notification");
+            foreach (var jToken in notifications)
+            {
+                try
+                {
+                    CheckDocument(jToken);
+                }
+                catch (Exception e)
+                {
+                    Log.Logger(e);
+                }
             }
+        }
+
+        private void CheckDocument(JToken token)
+        {
+            var isArchived = (int?) token.SelectToken("isArchived") ?? 0;
+            if (isArchived > 0) return;
+            var bidNumber = (string) token.SelectToken("bidNumber") ?? throw new Exception("bad bidNumber");
+            var publishDate = (DateTime?) token.SelectToken("publishDate") ?? throw new Exception("bad bidNumber");
+            var lastChanged =  (DateTime?) token.SelectToken("lastChanged") ?? throw new Exception("bad bidNumber");
+            var odDetailedHref = (string) token.SelectToken("odDetailedHref") ?? throw new Exception("bad bidNumber");
+            Console.WriteLine(bidNumber);
+            Console.WriteLine(publishDate);
+            Console.WriteLine(lastChanged);
+            Console.WriteLine(odDetailedHref);
         }
     }
 }
