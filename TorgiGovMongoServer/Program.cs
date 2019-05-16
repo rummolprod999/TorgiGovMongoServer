@@ -18,6 +18,7 @@ namespace TorgiGovMongoServer
 
             Init(args[0]);
             Parser();
+            Builder.DeleteOldLogs();
         }
 
         private static void Init(string a)

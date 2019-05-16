@@ -60,8 +60,8 @@ namespace TorgiGovMongoServer.BuilderApp
                 Server = (string) o["server"];
                 _port = int.TryParse((string) o["port"], out _port) ? int.Parse((string) o["port"]) : 3306;
                 Database = (string) o["database"];
-                var logDirTmp =  "log_torgi_gov";
-                var tempDirTmp = "temp_torgi_gov";
+                const string logDirTmp = "log_torgi_gov";
+                const string tempDirTmp = "temp_torgi_gov";
                 LogDir = $"{Path}{System.IO.Path.DirectorySeparatorChar}{logDirTmp}";
                 TempDir = $"{Path}{System.IO.Path.DirectorySeparatorChar}{tempDirTmp}";
                 FileLog = $"{LogDir}{System.IO.Path.DirectorySeparatorChar}{Arg}_{DateTime.Now:dd_MM_yyyy}.log";
@@ -102,6 +102,19 @@ namespace TorgiGovMongoServer.BuilderApp
             }
 
             Environment.Exit(0);
+        }
+
+        public static void DeleteOldLogs()
+        {
+            var currDate = DateTime.Now;
+            var dirLog = new DirectoryInfo((LogDir));
+            foreach (var f in dirLog.EnumerateFiles())
+            {
+                if (f.CreationTime.AddDays(30) <= currDate)
+                {
+                    f.Delete();
+                }
+            }
         }
     }
 }
