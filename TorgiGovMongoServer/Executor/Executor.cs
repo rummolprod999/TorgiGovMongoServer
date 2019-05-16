@@ -1,5 +1,6 @@
 using System;
 using TorgiGovMongoServer.BuilderApp;
+using TorgiGovMongoServer.Logger;
 using TorgiGovMongoServer.Parsers;
 
 namespace TorgiGovMongoServer.Executor
@@ -30,7 +31,7 @@ public class Executor
             }
             catch (Exception e)
             {
-                Logger.Log.Logger("Exception in parsing()", e);
+                Log.Logger("Exception in parsing()", e);
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TorgiGovMongoServer.BuilderApp;
 
 namespace TorgiGovMongoServer.Logger
 {
@@ -13,7 +14,7 @@ namespace TorgiGovMongoServer.Logger
 
         static Log()
         {
-            _fileLog = BuilderApp.Builder.FileLog;
+            _fileLog = Builder.FileLog;
         }
 
         public static void Logger(params object[] parametrs)

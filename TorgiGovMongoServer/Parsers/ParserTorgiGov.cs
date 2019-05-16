@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -21,7 +20,7 @@ namespace TorgiGovMongoServer.Parsers
             "http://torgi.gov.ru/opendata/7710349494-torgi/data.xml?bidKind={bidKind}&publishDateFrom={publishDateFrom}&publishDateTo={publishDateTo}&lastChangeFrom={lastChangeFrom}&lastChangeTo={lastChangeTo}";
 
         public const string DbName = "torgi";
-        public  static IMongoDatabase database;
+        public  static IMongoDatabase Database;
         private IEnumerable<int> BidKinds => new[] {8};
 
         public void Parsing()
@@ -85,9 +84,9 @@ namespace TorgiGovMongoServer.Parsers
 
         private void CheckDocuments(JObject o, int bk)
         {
-            CreateDbIFNotExist(DbName);
+            CreateDbIfNotExist(DbName);
             var cl = new MongoClient(Builder.ConnectString);
-            database = cl.GetDatabase(DbName);
+            Database = cl.GetDatabase(DbName);
             var notifications = GetElements(o, "openData.notification");
             foreach (var jToken in notifications)
             {

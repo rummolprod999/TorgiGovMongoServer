@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace TorgiGovMongoServer.BuilderApp
 {
@@ -67,7 +67,7 @@ namespace TorgiGovMongoServer.BuilderApp
                 TempDir = $"{Path}{System.IO.Path.DirectorySeparatorChar}{tempDirTmp}";
                 FileLog = $"{LogDir}{System.IO.Path.DirectorySeparatorChar}{Arg}_{DateTime.Now:dd_MM_yyyy}.log";
                 ConnectString =
-                    $"mongodb://localhost:27017";
+                    "mongodb://localhost:27017";
             }
         }
 

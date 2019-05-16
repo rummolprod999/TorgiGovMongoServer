@@ -32,7 +32,7 @@ namespace TorgiGovMongoServer.Parsers
             }
         }
 
-        protected void CreateDbIFNotExist(string dbName)
+        protected void CreateDbIfNotExist(string dbName)
         {
             var client = new MongoClient(Builder.ConnectString);
             var dataBases = client.ListDatabases().ToList();
