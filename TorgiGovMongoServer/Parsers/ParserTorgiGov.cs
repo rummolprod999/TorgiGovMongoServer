@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TorgiGovMongoServer.BuilderApp;
+using TorgiGovMongoServer.Documents;
 using TorgiGovMongoServer.Logger;
 using TorgiGovMongoServer.NetworkLibraries;
 
@@ -20,8 +21,8 @@ namespace TorgiGovMongoServer.Parsers
             "http://torgi.gov.ru/opendata/7710349494-torgi/data.xml?bidKind={bidKind}&publishDateFrom={publishDateFrom}&publishDateTo={publishDateTo}&lastChangeFrom={lastChangeFrom}&lastChangeTo={lastChangeTo}";
 
         public const string DbName = "torgi";
-        public MongoClient clientDb;
-        private IEnumerable<int> BidKinds => new[] {1};
+        public  static IMongoDatabase database;
+        private IEnumerable<int> BidKinds => new[] {8};
 
         public void Parsing()
         {
@@ -64,11 +65,11 @@ namespace TorgiGovMongoServer.Parsers
                     Log.Logger("Получили пустую строку со списком торгов", urlB);
                     continue;
                 }
-                StringToJson(xmlS);
+                StringToJson(xmlS, b);
             }
         }
 
-        private void StringToJson(string s)
+        private void StringToJson(string s, int bk)
         {
             var doc = new XmlDocument();
             doc.LoadXml(s);
@@ -78,20 +79,21 @@ namespace TorgiGovMongoServer.Parsers
                 sw.WriteLine(jsons);
             }*/
             var jo = JObject.Parse(jsons);
-            CheckDocuments(jo);
+            CheckDocuments(jo, bk);
             
         }
 
-        private void CheckDocuments(JObject o)
+        private void CheckDocuments(JObject o, int bk)
         {
             CreateDbIFNotExist(DbName);
-            clientDb = new MongoClient(Builder.ConnectString);
+            var cl = new MongoClient(Builder.ConnectString);
+            database = cl.GetDatabase(DbName);
             var notifications = GetElements(o, "openData.notification");
             foreach (var jToken in notifications)
             {
                 try
                 {
-                    CheckDocument(jToken);
+                    CheckDocument(jToken, bk);
                 }
                 catch (Exception e)
                 {
@@ -100,7 +102,7 @@ namespace TorgiGovMongoServer.Parsers
             }
         }
 
-        private void CheckDocument(JToken token)
+        private void CheckDocument(JToken token, int bk)
         {
             var isArchived = (int?) token.SelectToken("isArchived") ?? 0;
             if (isArchived > 0) return;
@@ -108,10 +110,8 @@ namespace TorgiGovMongoServer.Parsers
             var publishDate = (DateTime?) token.SelectToken("publishDate") ?? throw new Exception("bad bidNumber");
             var lastChanged =  (DateTime?) token.SelectToken("lastChanged") ?? throw new Exception("bad bidNumber");
             var odDetailedHref = (string) token.SelectToken("odDetailedHref") ?? throw new Exception("bad bidNumber");
-            Console.WriteLine(bidNumber);
-            Console.WriteLine(publishDate);
-            Console.WriteLine(lastChanged);
-            Console.WriteLine(odDetailedHref);
+            var doc = new DocumentTorgi(bidNumber, lastChanged, publishDate, odDetailedHref, bk);
+            ParserDocument(doc);
         }
     }
 }
