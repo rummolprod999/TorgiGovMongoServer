@@ -50,8 +50,8 @@ namespace TorgiGovMongoServer.Documents
 
         private bool DelArchived(IMongoCollection<GovDoc> col)
         {
-            var filter = new BsonDocument("BidNumberG", _bidNumber);
             if (_isArchived != 1) return false;
+            var filter = new BsonDocument("BidNumberG", _bidNumber);
             col.DeleteMany(filter);
             return true;
 
