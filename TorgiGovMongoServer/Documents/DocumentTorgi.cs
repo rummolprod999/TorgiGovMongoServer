@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using MongoDB.Bson;
@@ -80,9 +81,10 @@ namespace TorgiGovMongoServer.Documents
             doc.LoadXml(xmlS);
             var jsons = JsonConvert.SerializeXmlNode(doc);
             var dt = BsonDocument.Parse(jsons);
+            var m = dt.Elements.ToList()[1].Value.ToBsonDocument().Elements.ToList()[3].Value.ToBsonDocument();
             var tGov = new GovDoc
             {
-                BidKindT = _bidKind, BidNumberG = _bidNumber, Dt = dt, LastChangedT = _lastChanged,
+                BidKindT = _bidKind, BidNumberG = _bidNumber, Dt = m, LastChangedT = _lastChanged,
                 PublishDateT = _publishDate, OdDetailedHrefT = _odDetailedHref, Send = false
             };
             await col.InsertOneAsync(tGov);
