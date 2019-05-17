@@ -37,24 +37,20 @@ namespace TorgiGovMongoServer.Documents
         {
             var db = ParserTorgiGov.Database;
             var col = db.GetCollection<GovDoc>(ColName);
-            if (!DelArchived(col)) return;
+            if (DelArchived(col)) return;
             var filter = new BsonDocument("$and",
                 new BsonArray
-                    {new BsonDocument("bidNumberG", _bidNumber), new BsonDocument("lastChangedT", _lastChanged)});
+                    {new BsonDocument("BidNumberG", _bidNumber), new BsonDocument("LastChangedT", _lastChanged)});
             var cursor = col.Find(filter);
-            if (cursor.CountDocuments() != 0)
-            {
-                Console.WriteLine("this document is exist");
-                return;
-            }
-
+            if (cursor.CountDocuments() != 0) return;
+            
             FilterDoc(col).GetAwaiter().GetResult();
 
         }
 
         private bool DelArchived(IMongoCollection<GovDoc> col)
         {
-            var filter = new BsonDocument("bidNumberG", _bidNumber);
+            var filter = new BsonDocument("BidNumberG", _bidNumber);
             if (_isArchived != 1) return false;
             col.DeleteMany(filter);
             return true;
@@ -63,7 +59,7 @@ namespace TorgiGovMongoServer.Documents
 
         private async Task FilterDoc(IMongoCollection<GovDoc> col)
         {
-            var filterUpdate = new BsonDocument("bidNumberG", _bidNumber);
+            var filterUpdate = new BsonDocument("BidNumberG", _bidNumber);
             var docs = await col.Find(filterUpdate).ToListAsync();
             foreach (var govDoc in docs)
             {
