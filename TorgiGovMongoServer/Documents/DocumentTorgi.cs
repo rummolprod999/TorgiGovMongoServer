@@ -15,6 +15,7 @@ namespace TorgiGovMongoServer.Documents
     public class DocumentTorgi : AbstractDocument, IDocument
     {
         private readonly int _bidKind;
+        private readonly int _isArchived;
         private readonly string _bidNumber;
         private readonly DateTime _lastChanged;
         private readonly DateTime _publishDate;
@@ -22,19 +23,21 @@ namespace TorgiGovMongoServer.Documents
         private const string ColName = "torgigov";
 
         public DocumentTorgi(string bidNumber, DateTime lastChanged, DateTime publishDate, string odDetailedHref,
-            int bidKind)
+            int bidKind, int isArchived)
         {
             _bidNumber = bidNumber;
             _lastChanged = lastChanged;
             _publishDate = publishDate;
             _odDetailedHref = odDetailedHref;
             _bidKind = bidKind;
+            _isArchived = isArchived;
         }
 
         public void ParsingDocument()
         {
             var db = ParserTorgiGov.Database;
             var col = db.GetCollection<GovDoc>(ColName);
+            if (!DelArchived(col)) return;
             var filter = new BsonDocument("$and",
                 new BsonArray
                     {new BsonDocument("bidNumberG", _bidNumber), new BsonDocument("lastChangedT", _lastChanged)});
@@ -46,6 +49,16 @@ namespace TorgiGovMongoServer.Documents
             }
 
             FilterDoc(col).GetAwaiter().GetResult();
+
+        }
+
+        private bool DelArchived(IMongoCollection<GovDoc> col)
+        {
+            var filter = new BsonDocument("bidNumberG", _bidNumber);
+            if (_isArchived != 1) return false;
+            col.DeleteMany(filter);
+            return true;
+
         }
 
         private async Task FilterDoc(IMongoCollection<GovDoc> col)
