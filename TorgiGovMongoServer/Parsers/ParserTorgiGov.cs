@@ -21,7 +21,7 @@ namespace TorgiGovMongoServer.Parsers
 
         public const string DbName = "torgi";
         public  static IMongoDatabase Database;
-        private IEnumerable<int> BidKinds => new[] {8};
+        private IEnumerable<int> BidKinds => new[] {13, 8, 1, 2};
 
         public void Parsing()
         {
