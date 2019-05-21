@@ -31,7 +31,7 @@ namespace TorgiGovMongoServer.Parsers
         private void GeneratorUrl()
         {
             var nowDate = DateTime.Now;
-            var currDate = $"{nowDate:yyyyMMdd}T{nowDate:hhmm}";
+            var currDate = $"{nowDate:yyyyMMdd}T{nowDate:HHmm}";
             const string startDate = "20190101T0000";
             string parseUrl;
             switch (Builder.Arg)
@@ -41,7 +41,7 @@ namespace TorgiGovMongoServer.Parsers
                     parseUrl = parseUrl.Replace("{publishDateTo}", currDate);
                     break;
                 case Arguments.Curr:
-                    var date3Days = $"{nowDate.AddDays(-3):yyyyMMdd}T{nowDate.AddDays(-3):hhmm}";
+                    var date3Days = $"{nowDate.AddDays(-3):yyyyMMdd}T{nowDate.AddDays(-3):HHmm}";
                     parseUrl = UrlChange.Replace("{publishDateFrom}", date3Days);
                     parseUrl = parseUrl.Replace("{lastChangeFrom}", date3Days);
                     parseUrl = parseUrl.Replace("{publishDateTo}", currDate);
