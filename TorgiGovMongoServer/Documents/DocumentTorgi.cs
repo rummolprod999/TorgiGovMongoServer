@@ -44,7 +44,7 @@ namespace TorgiGovMongoServer.Documents
             var cursor = col.Find(filter);
             if (cursor.CountDocuments() != 0) return;
             
-            FilterDoc(col).GetAwaiter().GetResult();
+            FilterDocAsync(col).GetAwaiter().GetResult();
 
         }
 
@@ -57,7 +57,7 @@ namespace TorgiGovMongoServer.Documents
 
         }
 
-        private async Task FilterDoc(IMongoCollection<GovDoc> col)
+        private async Task FilterDocAsync(IMongoCollection<GovDoc> col)
         {
             var filterUpdate = new BsonDocument("BidNumberG", _bidNumber);
             var docs = await col.Find(filterUpdate).ToListAsync();
@@ -73,10 +73,10 @@ namespace TorgiGovMongoServer.Documents
                 update = resDel.DeletedCount > 0;
             }
 
-            await InsertDoc(col, update);
+            await InsertDocAsync(col, update);
         }
 
-        private async Task InsertDoc(IMongoCollection<GovDoc> col, bool updated)
+        private async Task InsertDocAsync(IMongoCollection<GovDoc> col, bool updated)
         {
             var xmlS = DownLoadString.DownloadString.DownL(_odDetailedHref);
             if (string.IsNullOrEmpty(xmlS))

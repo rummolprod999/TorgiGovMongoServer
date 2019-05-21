@@ -106,9 +106,9 @@ namespace TorgiGovMongoServer.Parsers
             var isArchived = (int?) token.SelectToken("isArchived") ?? 0;
             if (isArchived > 0) return;
             var bidNumber = (string) token.SelectToken("bidNumber") ?? throw new Exception("bad bidNumber");
-            var publishDate = (DateTime?) token.SelectToken("publishDate") ?? throw new Exception("bad bidNumber");
-            var lastChanged =  (DateTime?) token.SelectToken("lastChanged") ?? throw new Exception("bad bidNumber");
-            var odDetailedHref = (string) token.SelectToken("odDetailedHref") ?? throw new Exception("bad bidNumber");
+            var publishDate = (DateTime?) token.SelectToken("publishDate") ?? throw new Exception("bad publishDate");
+            var lastChanged =  (DateTime?) token.SelectToken("lastChanged") ?? throw new Exception("bad lastChanged");
+            var odDetailedHref = (string) token.SelectToken("odDetailedHref") ?? throw new Exception("bad odDetailedHref");
             var doc = new DocumentTorgi(bidNumber, lastChanged, publishDate, odDetailedHref, bk, isArchived);
             ParserDocument(doc);
         }
