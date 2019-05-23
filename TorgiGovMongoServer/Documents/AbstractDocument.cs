@@ -4,5 +4,6 @@ namespace TorgiGovMongoServer.Documents
     {
         public static int Count { get; set; }
         public static int UpCount { get; set; }
+        public static int DeleteCount { get; set; }
     }
 }

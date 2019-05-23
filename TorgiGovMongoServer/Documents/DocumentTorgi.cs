@@ -52,7 +52,8 @@ namespace TorgiGovMongoServer.Documents
         {
             if (_isArchived != 1) return false;
             var filter = new BsonDocument("BidNumberG", _bidNumber);
-            col.DeleteMany(filter);
+            var delRes = col.DeleteMany(filter);
+            DeleteCount += (int) delRes.DeletedCount;
             return true;
 
         }
@@ -70,6 +71,7 @@ namespace TorgiGovMongoServer.Documents
             if (docs.Count > 0)
             {
                 var resDel = await col.DeleteManyAsync(filterUpdate);
+                DeleteCount += (int) resDel.DeletedCount;
                 update = resDel.DeletedCount > 0;
             }
 
