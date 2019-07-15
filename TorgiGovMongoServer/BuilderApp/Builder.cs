@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -21,7 +22,7 @@ namespace TorgiGovMongoServer.BuilderApp
         private static int _port;
         public static Arguments Arg { get; private set; }
         private static Builder _b;
-
+        public static Regex RegexBrnKln = new Regex(@"б[pр]ян[сc][кk]|[кk]линц", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         public const string ReqArguments =
             "last, curr";
 

@@ -87,6 +87,11 @@ namespace TorgiGovMongoServer.Documents
                 return;
             }
 
+            var matches = BuilderApp.Builder.RegexBrnKln.Matches(xmlS);
+            if (matches.Count == 0)
+            {
+                return;
+            }
             var doc = new XmlDocument();
             doc.LoadXml(xmlS);
             var jsons = JsonConvert.SerializeXmlNode(doc);
