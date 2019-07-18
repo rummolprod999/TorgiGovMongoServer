@@ -87,16 +87,16 @@ namespace TorgiGovMongoServer.Documents
                 return;
             }
 
+            var m = new BsonDocument();
             var matches = BuilderApp.Builder.RegexBrnKln.Matches(xmlS);
-            if (matches.Count == 0)
+            if (matches.Count != 0)
             {
-                return;
+                var doc = new XmlDocument();
+                doc.LoadXml(xmlS);
+                var jsons = JsonConvert.SerializeXmlNode(doc);
+                var dt = BsonDocument.Parse(jsons);
+                m = dt.Elements.ToList()[1].Value.ToBsonDocument().Elements.ToList()[3].Value.ToBsonDocument();
             }
-            var doc = new XmlDocument();
-            doc.LoadXml(xmlS);
-            var jsons = JsonConvert.SerializeXmlNode(doc);
-            var dt = BsonDocument.Parse(jsons);
-            var m = dt.Elements.ToList()[1].Value.ToBsonDocument().Elements.ToList()[3].Value.ToBsonDocument();
             var tGov = new GovDoc
             {
                 BidKindT = _bidKind, BidNumberG = _bidNumber, Dt = m, LastChangedT = _lastChanged,
