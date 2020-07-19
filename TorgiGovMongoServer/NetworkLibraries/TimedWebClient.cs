@@ -26,7 +26,9 @@ namespace TorgiGovMongoServer.NetworkLibraries
             if (wr != null)
             {
                 wr.Timeout = 600000;
+                wr.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
                 wr.UserAgent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0";
+                wr.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.None;
                 return wr;
             }
 
