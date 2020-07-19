@@ -19,7 +19,7 @@ namespace TorgiGovMongoServer.NetworkLibraries
                 {
                     try
                     {
-                        var task = Task.Run(() => (new TimedWebClient()).DownloadString(url));
+                        var task = Task.Run(() => (new TimedWebClientUa()).DownloadString(url));
                         if (!task.Wait(TimeSpan.FromSeconds(650))) throw new TimeoutException();
                         tmp = task.Result;
                         break;
